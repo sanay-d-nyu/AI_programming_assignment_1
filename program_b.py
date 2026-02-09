@@ -1,8 +1,15 @@
+""" Program B 
+
+Solves the problem of "clustering with a diameter threshhold" (without vector values, problem 4 from problem set 1)
+using hill-climbing with random restart.
+"""
+
 import copy
 import helper
 import random
 
 def cluster_to_str(cluster):
+    """Formats a cluster into a string for printing"""
     ret_list = []
     ret_list.append('{')
     for point in cluster:
@@ -15,6 +22,7 @@ def cluster_to_str(cluster):
 
 
 def state_to_str(state, dimension, tau):
+    """Formats a state, along with it's error, into a string for printing"""
     ret_list = []
     for cluster in state:
         ret_list.append(cluster_to_str(cluster))
@@ -24,8 +32,11 @@ def state_to_str(state, dimension, tau):
     ret_list.append(' Error={0:.4f}'.format(helper.state_error(state, dimension, tau)))
     return ''.join(ret_list)
 
-# generates a random state according to the method specified in the assignment
 def random_state(omega, max_clusters):
+    """generates a random state according to the method specified in the assignment
+    
+    Does not seed the prng
+    """
     omega_copy = copy.deepcopy(omega)
     ret_state = []
     for i in range(max_clusters):
@@ -43,6 +54,17 @@ def random_state(omega, max_clusters):
 
 
 def get_neighbors(state):
+    """Returns the neighbors of a given state
+    
+    Parameters
+    ----------
+    state : list 
+        list of clusters (where a cluster is a list of tuples representing the points in Omega)
+
+    Returns
+    -------
+    list of valid neighbor states
+    """
     neighbors = []
     for i, cluster in enumerate(state):
         if not len(cluster) >= 2:
@@ -67,6 +89,23 @@ def get_neighbors(state):
     return neighbors
 
 def hill_climbing(state, dimension, tau, verbose):
+    """Executes hill climbing on the given state 
+    
+    Parameters
+    ----------
+    state : list 
+        list of clusters (where a cluster is a list of tuples representing the points in Omega)
+    dimension : int
+        m, or the dimension of the points in the state space
+    tau : float
+        the maximum diameter of any given cluster
+    verbose : boolean
+        verbose output flag
+
+    Returns
+    -------
+    The goal state (neighbor state with error = 0), or None if the search failed
+    """
     neighbors = get_neighbors(state)
     min_error = helper.state_error(state, dimension, tau)
     min_index = -1

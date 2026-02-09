@@ -1,11 +1,32 @@
+""" Program A 
+
+Solves the problem of "clustering with a diameter threshhold and vector values" (problem 2 from problem set 1)
+using iterative deepening
+"""
+
 import copy
 import helper
 
-"""
-Here a cluster is a collection of vectors and state is a list of clusters
-"""
-
 def get_successors(state, dimension, omega, max_clusters, tau):
+    """Returns the successors of a given state 
+
+    Parameters
+    ----------
+    state : list
+        list of clusters (where a cluster is a list of tuples representing the points in Omega)
+    dimension : int
+        m, or the dimension of the points in the state space
+    omega : list
+        the set of all the vectors (points) in the state space
+    max_clusters : int
+        k, or the maximum number of clusters allowed in a given state
+    tau : float
+        the maximum diameter of any given cluster
+
+    Returns
+    -------
+    list of valid successor states, or an empty list if there are no valid successors
+    """
     if len(state) == 1 and len(state[0]) == 0:
         return [[[point]] for point in omega]
 
@@ -53,6 +74,7 @@ def get_successors(state, dimension, omega, max_clusters, tau):
     return successors
 
 def cluster_to_str(cluster):
+    """Formats a cluster into a string for printing"""
     ret_list = []
     ret_list.append('{')
     for point in cluster:
@@ -65,6 +87,7 @@ def cluster_to_str(cluster):
 
 
 def state_to_str(state, dimension):
+    """Formats a state, along with it's value, into a string for printing"""
     value = helper.state_value(state, dimension)
     ret_list = []
     for cluster in state:
@@ -76,6 +99,33 @@ def state_to_str(state, dimension):
     return ''.join(ret_list)
     
 def dfs(state, dimension, omega, max_clusters, tau, goal, curr_depth, max_depth, verbose):
+    """Executes DFS on the state space up to a maximum depth of max_depth 
+
+    Parameters
+    ----------
+    state : list
+        list of clusters (where a cluster is a list of tuples representing the points in Omega)
+    dimension : int
+        m, or the dimension of the points in the state space
+    omega : list
+        the set of all the vectors (points) in the state space
+    max_clusters : int
+        k, or the maximum number of clusters allowed in a given state
+    tau : float
+        the maximum diameter of any given cluster
+    goal : int
+        T, or the target value for the goal state
+    curr_depth : int
+        The depth in the state space of the state that dfs is executing only
+    max_depth : int
+        The maximum allowable depth for this iteration of dfs
+    verbose : boolean
+        verbose output flag
+
+    Returns
+    -------
+    The goal state or [[]] (start state or empty state) if a goal state was not found
+    """
     if curr_depth != 0:
         if helper.state_value(state, dimension) >= goal:
             return state
