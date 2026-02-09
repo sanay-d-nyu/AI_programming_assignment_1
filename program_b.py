@@ -154,9 +154,11 @@ def main():
         hill_result = hill_climbing(start_state, dimension, tau, verbose)
         if hill_result != None:
             print(f'Found solution: {state_to_str(hill_result, dimension, tau)}')
-            break
+            return
 
         restarts += 1
+
+    print('No solution found.')
 
 
 if __name__ == "__main__":
